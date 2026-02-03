@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI=process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 interface MongooseCache {
     conn: typeof mongoose | null;
@@ -8,13 +8,15 @@ interface MongooseCache {
 }
 
 declare global {
-    var mongoose: MongooseCache | undefined ;
+    var mongoose: MongooseCache | undefined;
 }
 
-let cached: MongooseCache = global.mongoose || global.mongoose || { conn: null, promise: null};
-if (!global.mongoose){
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null }; // Changed let to const
+
+if (!global.mongoose) {
     global.mongoose = cached;
 }
+
 async function connectDB() {
     if (!MONGODB_URI) {
         throw new Error(
@@ -45,4 +47,5 @@ async function connectDB() {
 
     return cached.conn;
 }
+
 export default connectDB;
